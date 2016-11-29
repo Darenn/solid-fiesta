@@ -5,7 +5,7 @@
 
 class Agent : public Entity {
 public:
-  Agent(int _x, int _y) : Entity(_x, _y){};
+  Agent(int _id, int _x, int _y) : Entity(_id, _x, _y){};
 
   virtual ~Agent();
 };
