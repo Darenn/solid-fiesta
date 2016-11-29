@@ -9,9 +9,13 @@ protected:
   Snaffle *holding;
 
 public:
-  Wizard(int _id, int _x, int _y) : Agent(_id, _x, _y), holding(0){};
+  Wizard(int _id) : Agent(_id), holding(0){};
 
-  virtual ~Wizard();
+  void set_holding(Snaffle *s) { holding = s; }
+
+  bool is_holding() { return holding != 0; }
+
+  virtual ~Wizard(){};
 };
 
 #endif

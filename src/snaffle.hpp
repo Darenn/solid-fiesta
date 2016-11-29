@@ -6,8 +6,9 @@
 class Snaffle : public Entity {
 private:
 public:
-  Snaffle(int _id, int _x, int _y) : Entity(_id, _x, _y){};
-  virtual ~Snaffle();
+  Snaffle(int _id) : Entity(_id){};
+
+  virtual ~Snaffle(){};
 };
 
 #endif

@@ -1,49 +1,36 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <vector>
 
-#include "entity.hpp"
+#include "brain.hpp"
 
 using namespace std;
 
-/**
- * Grab Snaffles and try to throw them through the opponent's goal!
- * Move towards a Snaffle and use your team id to determine where you need to
- *throw it.
- **/
 int main() {
-  int myTeamId; // if 0 you need to score on the right of the map, if 1 you need
-                // to score on the left
+  int myTeamId;
   cin >> myTeamId;
   cin.ignore();
 
+  Brain brain = Brain(myTeamId);
+
   // game loop
   while (1) {
-    int entities; // number of entities still in game
-    cin >> entities;
+
+    brain.next_turn();
+
+    int nb_entities;
+    cin >> nb_entities;
     cin.ignore();
-    for (int i = 0; i < entities; i++) {
-      int entityId;      // entity identifier
-      string entityType; // "WIZARD", "OPPONENT_WIZARD" or "SNAFFLE" (or
-                         // "BLUDGER" after first league)
-      int x;             // position
-      int y;             // position
-      int vx;            // velocity
-      int vy;            // velocity
-      int state;         // 1 if the wizard is holding a Snaffle, 0 otherwise
+    for (int i = 0; i < nb_entities; i++) {
+      int entityId, x, y, vx, vy, state;
+      string entityType;
       cin >> entityId >> entityType >> x >> y >> vx >> vy >> state;
       cin.ignore();
-    }
-    for (int i = 0; i < 2; i++) {
 
-      // Write an action using cout. DON'T FORGET THE "<< endl"
-      // To debug: cerr << "Debug messages..." << endl;
-
-      // Edit this line to indicate the action for each wizard (0 <= thrust <=
-      // 150, 0 <= power <= 500)
-      // i.e.: "MOVE x y thrust" or "THROW x y power"
-      cout << "MOVE 8000 3750 100" << endl;
+      brain.update_entity(entityId, entityType, x, y, vx, vy, state);
     }
+
+    brain.remove_old_entity();
+    brain.play();
   }
 }

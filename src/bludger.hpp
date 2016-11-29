@@ -5,9 +5,9 @@
 
 class Bludger : public Agent {
 public:
-  Bludger(int _id, int _x, int _y) : Agent(_id, _x, _y){};
+  Bludger(int _id) : Agent(_id){};
 
-  virtual ~Bludger();
+  virtual ~Bludger(){};
 };
 
 #endif
