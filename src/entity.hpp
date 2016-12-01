@@ -1,5 +1,6 @@
 #ifndef __ENTITY_HPP_
 #define __ENTITY_HPP_
+#pragma once
 
 #include <vector>
 

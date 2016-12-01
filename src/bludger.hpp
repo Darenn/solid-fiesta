@@ -1,5 +1,6 @@
 #ifndef __BLUDGER_HPP_
 #define __BLUDGER_HPP_
+#pragma once
 
 #include "agent.hpp"
 

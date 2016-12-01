@@ -1,5 +1,6 @@
 #ifndef __SNAFFLE_HPP_
 #define __SNAFFLE_HPP_
+#pragma once
 
 #include "entity.hpp"
 

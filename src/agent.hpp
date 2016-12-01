@@ -1,5 +1,6 @@
 #ifndef __AGENT_HPP_
 #define __AGENT_HPP_
+#pragma once
 
 #include "entity.hpp"
 

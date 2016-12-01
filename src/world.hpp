@@ -1,5 +1,6 @@
 #ifndef __WORLD_HPP_
 #define __WORLD_HPP_
+#pragma once
 
 #include <cmath>
 #include <map>

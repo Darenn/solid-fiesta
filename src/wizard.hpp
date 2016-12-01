@@ -1,5 +1,6 @@
 #ifndef __WIZARD_HPP_
 #define __WIZARD_HPP_
+#pragma once
 
 #include <sstream>
 #include <string>

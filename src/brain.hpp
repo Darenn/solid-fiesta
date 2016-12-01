@@ -1,5 +1,6 @@
 #ifndef __BRAIN_HPP_
 #define __BRAIN_HPP_
+#pragma once
 
 #include <iostream>
 #include <map>

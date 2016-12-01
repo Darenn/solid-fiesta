@@ -1,5 +1,6 @@
 #ifndef __TEAM_HPP_
 #define __TEAM_HPP_
+#pragma once
 
 #include <cassert>
 #include <map>
