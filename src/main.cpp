@@ -15,9 +15,6 @@ int main() {
 
   // game loop
   while (1) {
-
-    brain.next_turn();
-
     int nb_entities;
     cin >> nb_entities;
     cin.ignore();
@@ -32,5 +29,6 @@ int main() {
 
     brain.remove_old_entity();
     brain.play();
+    brain.next_turn();
   }
 }

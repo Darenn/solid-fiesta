@@ -5,128 +5,47 @@
 #include <map>
 #include <string>
 
-#include "bludger.hpp"
-#include "snaffle.hpp"
-#include "wizard.hpp"
+#include "world.hpp"
 
 class Brain {
 private:
-  int team_id, turn, but_x, but_y, power;
-
-  std::map<int, Wizard *> wizards;
-  std::map<int, Wizard *> opponent_wizards;
-  std::map<int, Snaffle *> snaffles;
-  std::map<int, Bludger *> bludgers;
+  World world;
+  int team_id, turn;
 
 public:
-  Brain(int _team_id) : team_id(_team_id), turn(0) {
-    if (team_id) {
-      but_x = 0;
-      but_y = 3750;
-    } else {
-      but_x = 16000;
-      but_y = 3750;
-    }
-  };
-
+  Brain(int _team_id) : team_id(_team_id) {}
   virtual ~Brain(){};
 
   void next_turn() {
     turn++;
-    if (power < 100) {
-      power++;
-    }
+    world.get_team(team_id)->update_power(1);
+    world.get_team(!team_id)->update_power(1);
   }
 
-  void update_entity(int entityId, const std::string entityType, int x, int y,
+  void update_entity(int entity_id, const std::string entityType, int x, int y,
                      int vx, int vy, int state) {
     if (entityType == "WIZARD") {
-      if (wizards.find(entityId) == wizards.end()) {
-        wizards[entityId] = new Wizard(entityId);
-      }
-      wizards[entityId]->update(x, y, vx, vy, turn);
-      if (state) {
-        wizards[entityId]->set_holding(snaffles.begin()->second);
-      } else {
-        wizards[entityId]->set_holding(NULL);
-      }
+      world.update_wizard(team_id, entity_id, x, y, vx, vy, state, turn);
     } else if (entityType == "OPPONENT_WIZARD") {
-      if (opponent_wizards.find(entityId) == opponent_wizards.end()) {
-        opponent_wizards[entityId] = new Wizard(entityId);
-      }
-      opponent_wizards[entityId]->update(x, y, vx, vy, turn);
+      world.update_wizard(!team_id, entity_id, x, y, vx, vy, state, turn);
     } else if (entityType == "SNAFFLE") {
-      if (snaffles.find(entityId) == snaffles.end()) {
-        snaffles[entityId] = new Snaffle(entityId);
-      }
-      snaffles[entityId]->update(x, y, vx, vy, turn);
+      world.update_snaffle(entity_id, x, y, vx, vy, turn);
     } else if (entityType == "BLUDGER") {
-      if (bludgers.find(entityId) == bludgers.end()) {
-        bludgers[entityId] = new Bludger(entityId);
-      }
-      bludgers[entityId]->update(x, y, vx, vy, turn);
+      world.update_bludger(entity_id, x, y, vx, vy, turn);
     }
   }
 
-  void remove_old_entity() {
-    for (std::map<int, Snaffle *>::iterator it = snaffles.begin();
-         it != snaffles.end(); ++it) {
-      if (it->second->get_last_update() < turn) {
-        snaffles.erase(it);
-      }
-    }
-  }
-
-  Snaffle *get_target(Wizard *w, bool left) {
-    Snaffle *target = NULL;
-    int dist = 160001;
-    int new_dist;
-    for (std::map<int, Snaffle *>::iterator it = snaffles.begin();
-         it != snaffles.end(); ++it) {
-      if (left) {
-        new_dist = it->second->get_x();
-      } else {
-        new_dist = 16000 - it->second->get_x();
-      }
-
-      if (new_dist < dist) {
-        dist = new_dist;
-        target = it->second;
-      }
-    }
-    return target;
-  }
+  void remove_old_entity() { world.remove_old_entity(turn); }
 
   void play() {
-    bool left = true;
-    for (std::map<int, Wizard *>::iterator it = wizards.begin();
-         it != wizards.end(); ++it) {
-      if (it->second->is_holding()) {
-        std::cout << "THROW " << but_x << " " << but_y << " 500" << std::endl;
-      } else {
-        Snaffle *snaffle = get_target(it->second, left);
-        if (power > 30) {
-          power -= 20;
-          if (team_id == 0) {
-            if (snaffle->get_x() <= it->second->get_x()) {
-              std::cout << "ACCIO " << snaffle->get_id() << std::endl;
-            } else {
-              std::cout << "FLIPENDO " << snaffle->get_id() << std::endl;
-            }
-          } else {
-            if (snaffle->get_x() >= it->second->get_x()) {
-              std::cout << "ACCIO " << snaffle->get_id() << std::endl;
-            } else {
-              std::cout << "FLIPENDO " << snaffle->get_id() << std::endl;
-            }
-          }
-
-        } else {
-          std::cout << "MOVE " << snaffle->get_x() << " " << snaffle->get_y()
-                    << " 150" << std::endl;
-        }
-      }
-      left = !left;
+    int d;
+    Team *t = world.get_team(team_id);
+    Snaffle *s = world.get_close_snaffle(t->get_goal_pos(), &d);
+    if (d < 500) {
+      std::cout << world.get_team(team_id)->defend(t->get_goal_pos(), s);
+    } else {
+      std::cout << world.get_team(team_id)->goal(
+          world.get_team(!team_id)->get_goal_pos(), s);
     }
   }
 };
